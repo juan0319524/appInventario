@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inventario Universitario</title>
+<style>
+:root{--bg:#f5f6fa;--sf:#fff;--tx:#1b1f2a;--mu:#5b6375;--ln:#e1e4ed;--pr:#2347c5;--pt:#fff;--ok:#17744a;--okb:#e3f4ec;--wn:#a35508;--wnb:#fcefd9;--er:#b3261e;--erb:#fce8e6;--ch:#eef1fb;--ac:#7a3fc4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141b;--sf:#1b1e28;--tx:#eceef5;--mu:#9aa2b5;--ln:#2c3040;--pr:#7d9bff;--pt:#0d1230;--ok:#58d39a;--okb:#143225;--wn:#f0b45c;--wnb:#3a2a10;--er:#ff8f86;--erb:#3d1b19;--ch:#232842;--ac:#c39bff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12141b;--sf:#1b1e28;--tx:#eceef5;--mu:#9aa2b5;--ln:#2c3040;--pr:#7d9bff;--pt:#0d1230;--ok:#58d39a;--okb:#143225;--wn:#f0b45c;--wnb:#3a2a10;--er:#ff8f86;--erb:#3d1b19;--ch:#232842;--ac:#c39bff;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+h1,h2,h3{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding:12px 14px 40px}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 0}
+header h1{font-size:19px}header small{color:var(--mu)}
+nav{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--ln);padding-bottom:8px;margin-bottom:14px}
+nav button{white-space:nowrap}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--ln);background:var(--sf);border-radius:8px;padding:7px 12px}
+button:hover{border-color:var(--pr)}
+button.primary,nav button.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
+button.danger{color:var(--er)}button.sm{padding:4px 9px;font-size:13px}
+input,select,textarea{width:100%;background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:8px 10px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--pr);outline-offset:1px}
+input[aria-invalid="true"],select[aria-invalid="true"]{border-color:var(--er)}
+label{display:block;font-size:13px;color:var(--mu)}
+label input,label select,label textarea{margin-top:3px;color:var(--tx)}
+.err{display:block;color:var(--er);min-height:16px;font-size:12px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:14px}
+.bar-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.bar-tools>*{flex:1 1 150px}.bar-tools .primary{flex:0 0 auto}
+.tw{overflow-x:auto;border:1px solid var(--ln);border-radius:12px;background:var(--sf)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--ln);vertical-align:middle}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mu)}
+tr:last-child td{border-bottom:0}.num{text-align:right}
+td.act{white-space:nowrap;text-align:right}
+.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+.b-ok{background:var(--okb);color:var(--ok)}.b-wn{background:var(--wnb);color:var(--wn)}.b-er{background:var(--erb);color:var(--er)}.b-mu{background:var(--ch);color:var(--mu)}
+.empty{padding:26px;text-align:center;color:var(--mu)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px}
+.kpi b{display:block;font-size:20px}.kpi span{font-size:12px;color:var(--mu)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.bar{display:grid;grid-template-columns:96px 1fr 64px;gap:8px;align-items:center;margin:7px 0;font-size:13px}
+.bl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bv{text-align:right;color:var(--mu)}
+.track{position:relative;height:16px;background:var(--ch);border-radius:5px}
+.fill{position:absolute;left:0;top:0;bottom:0;background:var(--pr);border-radius:5px}
+.fill.low{background:var(--wn)}.fill.cat{background:var(--ac)}
+.mk{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--tx)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}.grid .full{grid-column:1/-1}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+dialog{border:1px solid var(--ln);border-radius:14px;background:var(--sf);color:var(--tx);width:min(560px,94vw);padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.row{display:flex;gap:8px;margin-top:12px}.row.end{justify-content:flex-end}
+#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;z-index:50}
+#toast.show{opacity:1}
+.login{max-width:380px;margin:8vh auto 0}
+.hint{font-size:12.5px;color:var(--mu);margin-top:12px}
+.hint code{background:var(--ch);padding:1px 5px;border-radius:5px}
+.warn{background:var(--wnb);color:var(--wn);padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:13px}
+ul.c{margin:6px 0 0;padding-left:18px}ul.c li{margin:5px 0}
+.muted{color:var(--mu);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<dialog id="dlg"></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+/* =====================================================================
+   ARQUITECTURA EN CAPAS (guía §12)
+   1) DOMINIO         → entidades y reglas de negocio (RN01–RN05)
+   2) APLICACIÓN      → casos de uso (CU01–CU04, categorías, desactivar)
+   3) INFRAESTRUCTURA → persistencia (localStorage con respaldo en memoria)
+   4) PRESENTACIÓN    → interfaz, roles y pantallas
+   ===================================================================== */
+
+/* ---------- 1) DOMINIO ---------- */
+const Domain=(()=>{
+  const t=s=>String(s==null?'':s).trim();
+  const fold=s=>t(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const toNum=v=>(v===''||v==null||(typeof v==='string'&&!t(v)))?NaN:Number(v);
+  function num(v,label,int,e,key){
+    const n=toNum(v);
+    if(!Number.isFinite(n)) e[key]=label+' es obligatorio y debe ser un número.';       // RN04
+    else if(n<0) e[key]=label+' no puede ser negativo.';                                  // RN02 / RN03
+    else if(int&&!Number.isInteger(n)) e[key]=label+' debe ser un número entero.';
+  }
+  function validateProduct(d,prods,cats,selfId){
+    const e={},code=t(d.codigo),name=t(d.nombre);
+    if(!code) e.codigo='El código es obligatorio.';                                       // RN04
+    else if(code.length>20) e.codigo='Máximo 20 caracteres.';
+    else if(prods.some(p=>p.id!==selfId&&fold(p.codigo)===fold(code))) e.codigo='Código duplicado: ya existe un producto con ese código.'; // RN01
+    if(!name) e.nombre='El nombre es obligatorio.';                                       // RN04
+    else if(name.length>80) e.nombre='Máximo 80 caracteres.';
+    if(t(d.descripcion).length>200) e.descripcion='Máximo 200 caracteres.';
+    num(d.precio,'El precio',false,e,'precio');
+    num(d.stock,'El stock',true,e,'stock');
+    num(d.stockMin,'El stock mínimo',true,e,'stockMin');
+    if(!cats.some(c=>c.id===Number(d.categoriaId))) e.categoriaId='Selecciona una categoría.'; // RN04
+    return e;
+  }
+  function validateCategory(nombre,cats,selfId){
+    const n=t(nombre);
+    if(!n) return 'El nombre de la categoría es obligatorio.';
+    if(n.length>40) return 'Máximo 40 caracteres.';
+    if(cats.some(c=>c.id!==selfId&&fold(c.nombre)===fold(n))) return 'Ya existe una categoría con ese nombre.';
+    return '';
+  }
+  const isActive=p=>p.estado==='Activo';
+  const available=l=>l.filter(p=>isActive(p)&&p.stock>0);                                // RN05
+  const low=l=>l.filter(p=>isActive(p)&&p.stock<p.stockMin);
+  const search=(l,q)=>{const k=fold(q);return k?l.filter(p=>fold(p.codigo).includes(k)||fold(p.nombre).includes(k)):l};
+  function analysis(prods,cats){
+    const a=prods.filter(isActive),value=p=>p.precio*p.stock;
+    const total=a.reduce((s,p)=>s+value(p),0);
+    const byCat=cats.map(c=>{const l=a.filter(p=>p.categoriaId===c.id);return{nombre:c.nombre,n:l.length,units:l.reduce((s,p)=>s+p.stock,0),value:l.reduce((s,p)=>s+value(p),0)}}).filter(c=>c.n>0);
+    const maxPrice=a.reduce((m,p)=>!m||p.precio>m.precio?p:m,null);
+    const minStock=a.reduce((m,p)=>!m||p.stock<m.stock?p:m,null);
+    const lows=low(a),missing=lows.reduce((s,p)=>s+(p.stockMin-p.stock),0);
+    const top=byCat.slice().sort((x,y)=>y.value-x.value)[0];
+    return{a,total,byCat,maxPrice,minStock,lows,missing,top};
+  }
+  return{t,fold,validateProduct,validateCategory,isActive,available,low,search,analysis};
+})();
+
+/* ---------- 3) INFRAESTRUCTURA ---------- */
+const Repo=(()=>{
+  const KEY='inventario-universitario.v1';let ok=true;
+  const seed=()=>({cats:[{id:1,nombre:'Computadores'},{id:2,nombre:'Periféricos'},{id:3,nombre:'Audiovisual'}],
+    prods:[
+      {id:1,codigo:'LAP-001',nombre:'Laptop',descripcion:'Portátil para préstamo a docentes',precio:2500000,stock:8,stockMin:5,estado:'Activo',categoriaId:1},
+      {id:2,codigo:'MON-001',nombre:'Monitor',descripcion:'Monitor de 24 pulgadas',precio:900000,stock:15,stockMin:5,estado:'Activo',categoriaId:2},
+      {id:3,codigo:'TEC-001',nombre:'Teclado',descripcion:'Teclado USB en español',precio:120000,stock:30,stockMin:10,estado:'Activo',categoriaId:2},
+      {id:4,codigo:'MOU-001',nombre:'Mouse',descripcion:'Mouse óptico USB',precio:70000,stock:50,stockMin:10,estado:'Activo',categoriaId:2},
+      {id:5,codigo:'PRO-001',nombre:'Proyector',descripcion:'Proyector para aulas',precio:3000000,stock:3,stockMin:5,estado:'Activo',categoriaId:3}],
+    seq:{c:4,p:6}});
+  function load(){
+    try{const o=JSON.parse(localStorage.getItem(KEY));
+      if(o&&Array.isArray(o.cats)&&Array.isArray(o.prods)&&o.seq&&o.seq.c&&o.seq.p) return o;}catch(e){}
+    return seed();
+  }
+  function save(S){try{localStorage.setItem(KEY,JSON.stringify(S));ok=true}catch(e){ok=false}return ok}
+  return{load,save,seed,get ok(){return ok}};
+})();
+
+/* ---------- 2) APLICACIÓN (casos de uso) ---------- */
+function makeService(S,persist){
+  const t=Domain.t,save=()=>persist(S);
+  const clean=d=>({codigo:t(d.codigo),nombre:t(d.nombre),descripcion:t(d.descripcion),precio:Number(d.precio),stock:Number(d.stock),stockMin:Number(d.stockMin),categoriaId:Number(d.categoriaId)});
+  return{S,
+    createProduct(d){                                                                      // CU01
+      const e=Domain.validateProduct(d,S.prods,S.cats,null);if(Object.keys(e).length)return{ok:false,errors:e};
+      const p={id:S.seq.p++,...clean(d),estado:'Activo'};S.prods.push(p);save();return{ok:true,data:p};
+    },
+    updateProduct(id,d){                                                                   // CU04
+      const p=S.prods.find(x=>x.id===id);if(!p)return{ok:false,errors:{codigo:'El producto no existe.'}};
+      const e=Domain.validateProduct(d,S.prods,S.cats,id);if(Object.keys(e).length)return{ok:false,errors:e};
+      Object.assign(p,clean(d));save();return{ok:true,data:p};
+    },
+    setActive(id,on){const p=S.prods.find(x=>x.id===id);if(!p)return false;p.estado=on?'Activo':'Inactivo';save();return true},
+    createCategory(n){                                                                     // CU02
+      const m=Domain.validateCategory(n,S.cats,null);if(m)return{ok:false,error:m};
+      S.cats.push({id:S.seq.c++,nombre:t(n)});save();return{ok:true};
+    },
+    renameCategory(id,n){
+      const m=Domain.validateCategory(n,S.cats,id);if(m)return{ok:false,error:m};
+      S.cats.find(c=>c.id===id).nombre=t(n);save();return{ok:true};
+    },
+    deleteCategory(id){
+      if(S.prods.some(p=>p.categoriaId===id))return{ok:false,error:'No se puede eliminar: la categoría tiene productos asociados.'};
+      S.cats=S.cats.filter(c=>c.id!==id);this.S.cats=S.cats;save();return{ok:true};
+    }};
+}
+
+/* ---------- Pruebas de aceptación (guía §9) sobre una copia aislada ---------- */
+function runTests(){
+  const mk=()=>makeService({cats:[{id:1,nombre:'Computadores'}],prods:[],seq:{c:2,p:1}},()=>true);
+  const sv=mk(),base={codigo:'P001',nombre:'Laptop',descripcion:'',precio:2500000,stock:10,stockMin:5,categoriaId:1},R=[];
+  const T=(id,accion,esperado,fn)=>{let ok=false,obs='';try{[ok,obs]=fn()}catch(x){obs='Excepción: '+x.message}R.push({id,accion,esperado,ok:!!ok,obs})};
+  const n=()=>sv.S.prods.length;
+  T('P01','Registrar P001, Laptop, precio 2500000, stock 10','Producto creado',()=>{const r=sv.createProduct(base);return[r.ok&&n()===1,r.ok?'Creado con id '+r.data.id:JSON.stringify(r.errors)]});
+  T('P02','Registrar nuevamente P001 (también "p001")','Rechaza duplicado',()=>{const a=sv.createProduct(base),b=sv.createProduct({...base,codigo:' p001 '});return[!a.ok&&!b.ok&&a.errors.codigo&&n()===1,a.errors&&a.errors.codigo]});
+  T('P03','Registrar stock -5','Rechaza el dato',()=>{const r=sv.createProduct({...base,codigo:'P002',stock:-5});return[!r.ok&&r.errors.stock&&n()===1,r.errors&&r.errors.stock]});
+  T('P04','Registrar precio -100','Rechaza el dato',()=>{const r=sv.createProduct({...base,codigo:'P003',precio:-100});return[!r.ok&&r.errors.precio&&n()===1,r.errors&&r.errors.precio]});
+  T('P05','Modificar precio de P001 a 2.600.000','Nuevo valor persistido',()=>{const r=sv.updateProduct(1,{...base,precio:2600000});return[r.ok&&sv.S.prods[0].precio===2600000,'Precio guardado: '+sv.S.prods[0].precio]});
+  T('P06','Buscar P001 (y por nombre "lap")','Producto encontrado',()=>{const a=Domain.search(sv.S.prods,'P001'),b=Domain.search(sv.S.prods,'lap');return[a.length===1&&b.length===1,a.length+' resultado(s) por código']});
+  T('P07','Desactivar P001 y consultar disponibilidad','Deja de aparecer como disponible (RN05)',()=>{sv.setActive(1,false);const av=Domain.available(sv.S.prods).length;return[av===0&&sv.S.prods[0].estado==='Inactivo','Disponibles: '+av+' · estado: '+sv.S.prods[0].estado]});
+  T('RN04','Enviar formulario vacío','Rechaza y marca todos los campos obligatorios',()=>{const r=sv.createProduct({});const k=Object.keys(r.errors||{});return[!r.ok&&['codigo','nombre','precio','stock','stockMin','categoriaId'].every(x=>k.includes(x)),k.join(', ')]});
+  T('RN02b','Registrar stock 2,5 (decimal)','Rechaza el dato',()=>{const r=sv.createProduct({...base,codigo:'P004',stock:2.5});return[!r.ok&&r.errors.stock,r.errors&&r.errors.stock]});
+  T('CAT01','Registrar categoría repetida y eliminar una con productos','Ambas operaciones rechazadas',()=>{const a=sv.createCategory('computadores'),b=sv.deleteCategory(1);return[!a.ok&&!b.ok&&sv.S.cats.length===1,a.error+' | '+b.error]});
+  T('LOW01','Producto con stock 3 y mínimo 5 / otro con stock 5 y mínimo 5','Solo el primero aparece en stock bajo',()=>{const s2=mk();s2.createProduct({...base,codigo:'A',stock:3});s2.createProduct({...base,codigo:'B',stock:5});const l=Domain.low(s2.S.prods);return[l.length===1&&l[0].codigo==='A','Stock bajo: '+l.map(p=>p.codigo).join(',')]});
+  return R;
+}
+//#UI
+/* ---------- 4) PRESENTACIÓN ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:2}).format(n);
+const ROLES={admin:'Administrador',aux:'Auxiliar de inventario',doc:'Docente / usuario'};
+const USERS=[{u:'admin',p:'admin123',rol:'admin'},{u:'auxiliar',p:'aux123',rol:'aux'},{u:'docente',p:'doc123',rol:'doc'}];
+const TABS=[{id:'inv',l:'Inventario',r:['admin','aux','doc']},{id:'low',l:'Stock bajo',r:['admin','aux']},{id:'cat',l:'Categorías',r:['admin','aux']},{id:'ana',l:'Análisis',r:['admin','aux']},{id:'test',l:'Pruebas',r:['admin']}];
+const sv=makeService(Repo.load(),Repo.save);
+let U=null,ui={tab:'inv',q:'',cat:'',est:''},pending=null;
+try{const k=sessionStorage.getItem('iu.user');U=USERS.find(x=>x.u===k)||null}catch(e){}
+const canEdit=()=>U&&(U.rol==='admin'||U.rol==='aux'),isAdmin=()=>U&&U.rol==='admin';
+const catName=id=>{const c=sv.S.cats.find(x=>x.id===id);return c?c.nombre:'—'};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2600)}
+function badge(p,doc){
+  if(!Domain.isActive(p))return'<span class="badge b-mu">Inactivo</span>';
+  if(p.stock<=0)return'<span class="badge b-er">Agotado</span>';
+  if(!doc&&p.stock<p.stockMin)return'<span class="badge b-wn">Stock bajo</span>';
+  return'<span class="badge b-ok">Disponible</span>';
+}
+
+function render(){
+  const app=$('#app');
+  if(!U){
+    app.innerHTML=`<div class="card login"><h1>📦 Inventario Universitario</h1><p class="muted">Inicia sesión para continuar.</p>
+    <form id="login" novalidate><label>Usuario<input name="u" autocomplete="username" autocapitalize="none"></label><label style="margin-top:8px">Contraseña<input name="p" type="password" autocomplete="current-password"></label>
+    <small class="err" id="lerr"></small><button class="primary" style="width:100%;margin-top:4px">Ingresar</button></form>
+    <p class="hint">Usuarios de demostración (datos ficticios):<br><code>admin</code> / <code>admin123</code> · <code>auxiliar</code> / <code>aux123</code> · <code>docente</code> / <code>doc123</code></p></div>`;
+    return;
+  }
+  const tabs=TABS.filter(t=>t.r.includes(U.rol));
+  if(!tabs.some(t=>t.id===ui.tab))ui.tab=tabs[0].id;
+  app.innerHTML=`<header><div><h1>📦 Inventario Universitario</h1><small>${esc(ROLES[U.rol])} · ${esc(U.u)}</small></div><button data-act="logout">Cerrar sesión</button></header>
+  ${Repo.ok?'':'<div class="warn">No se pudo guardar en este navegador: los cambios se perderán al cerrar la página.</div>'}
+  <nav>${tabs.map(t=>`<button data-tab="${t.id}" class="${t.id===ui.tab?'on':''}">${t.l}</button>`).join('')}</nav><main id="view"></main>`;
+  view();
+}
+function view(){
+  const v=$('#view');
+  ({inv:vInv,low:vLow,cat:vCat,ana:vAna,test:vTest}[ui.tab])(v);
+}
+
+/* Inventario: consultar (READ), buscar, crear, modificar, desactivar */
+function vInv(v){
+  const doc=U.rol==='doc';
+  v.innerHTML=`<div class="bar-tools"><input id="q" type="search" placeholder="Buscar por código o nombre…" value="${esc(ui.q)}" aria-label="Buscar">
+  <select id="fcat" aria-label="Categoría"><option value="">Todas las categorías</option>${sv.S.cats.map(c=>`<option value="${c.id}" ${String(c.id)===ui.cat?'selected':''}>${esc(c.nombre)}</option>`).join('')}</select>
+  ${doc?'':`<select id="fest" aria-label="Estado"><option value="">Todos los estados</option><option ${ui.est==='Activo'?'selected':''} value="Activo">Activos</option><option ${ui.est==='Inactivo'?'selected':''} value="Inactivo">Inactivos</option></select>`}
+  ${canEdit()?'<button class="primary" data-act="new-prod">+ Nuevo producto</button>':''}</div><div id="tbl"></div>`;
+  drawTable();
+}
+function drawTable(){
+  const doc=U.rol==='doc';
+  let l=sv.S.prods.slice();
+  if(doc)l=l.filter(Domain.isActive);                       // el docente solo consulta productos activos (RN05)
+  else if(ui.est)l=l.filter(p=>p.estado===ui.est);
+  if(ui.cat)l=l.filter(p=>String(p.categoriaId)===ui.cat);
+  l=Domain.search(l,ui.q).sort((a,b)=>a.codigo.localeCompare(b.codigo,'es'));
+  const cols=doc?['Código','Producto','Categoría','Existencias','Disponibilidad']:['Código','Producto','Categoría','Precio','Stock','Mínimo','Estado',''];
+  $('#tbl').innerHTML=l.length?`<div class="tw"><table><thead><tr>${cols.map((c,i)=>`<th class="${['Precio','Stock','Mínimo','Existencias'].includes(c)?'num':''}">${c}</th>`).join('')}</tr></thead><tbody>${l.map(p=>doc?
+    `<tr><td>${esc(p.codigo)}</td><td><b>${esc(p.nombre)}</b><div class="muted">${esc(p.descripcion)}</div></td><td>${esc(catName(p.categoriaId))}</td><td class="num">${p.stock}</td><td>${badge(p,true)}</td></tr>`:
+    `<tr><td>${esc(p.codigo)}</td><td><b>${esc(p.nombre)}</b><div class="muted">${esc(p.descripcion)}</div></td><td>${esc(catName(p.categoriaId))}</td><td class="num">${money(p.precio)}</td><td class="num">${p.stock}</td><td class="num">${p.stockMin}</td><td>${badge(p)}</td>
+    <td class="act"><button class="sm" data-act="edit-prod" data-id="${p.id}">Modificar</button>${isAdmin()?` <button class="sm ${Domain.isActive(p)?'danger':''}" data-act="toggle" data-id="${p.id}">${Domain.isActive(p)?'Desactivar':'Reactivar'}</button>`:''}</td></tr>`).join('')}</tbody></table></div>`
+    :'<div class="card empty">No hay productos que coincidan con la búsqueda.</div>';
+}
+
+function vLow(v){
+  const l=Domain.low(sv.S.prods).sort((a,b)=>(a.stock-a.stockMin)-(b.stock-b.stockMin));
+  v.innerHTML=`<h2 style="margin-bottom:10px">Productos con stock bajo</h2><p class="muted">Productos activos cuyo stock es menor al stock mínimo.</p>`+(l.length?`<div class="tw"><table><thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th class="num">Stock</th><th class="num">Mínimo</th><th class="num">Faltan</th><th></th></tr></thead><tbody>${l.map(p=>`<tr><td>${esc(p.codigo)}</td><td><b>${esc(p.nombre)}</b></td><td>${esc(catName(p.categoriaId))}</td><td class="num">${p.stock}</td><td class="num">${p.stockMin}</td><td class="num"><span class="badge b-wn">${p.stockMin-p.stock}</span></td><td class="act"><button class="sm" data-act="edit-prod" data-id="${p.id}">Actualizar stock</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="card empty">✅ Ningún producto está por debajo de su stock mínimo.</div>');
+}
+
+function vCat(v){
+  v.innerHTML=`<div class="bar-tools"><h2 style="flex:1">Categorías</h2>${isAdmin()?'<button class="primary" data-act="new-cat">+ Nueva categoría</button>':''}</div>`+
+  (sv.S.cats.length?`<div class="tw"><table><thead><tr><th>Nombre</th><th class="num">Productos</th>${isAdmin()?'<th></th>':''}</tr></thead><tbody>${sv.S.cats.map(c=>`<tr><td><b>${esc(c.nombre)}</b></td><td class="num">${sv.S.prods.filter(p=>p.categoriaId===c.id).length}</td>${isAdmin()?`<td class="act"><button class="sm" data-act="edit-cat" data-id="${c.id}">Renombrar</button> <button class="sm danger" data-act="del-cat" data-id="${c.id}">Eliminar</button></td>`:''}</tr>`).join('')}</tbody></table></div>`:'<div class="card empty">Aún no hay categorías.</div>');
+}
+
+/* Análisis de datos (guía §10): solo productos activos */
+function vAna(v){
+  const A=Domain.analysis(sv.S.prods,sv.S.cats);
+  if(!A.a.length){v.innerHTML='<div class="card empty">No hay productos activos para analizar.</div>';return}
+  const units=A.a.reduce((s,p)=>s+p.stock,0),mx=Math.max(1,...A.a.map(p=>Math.max(p.stock,p.stockMin))),mv=Math.max(1,...A.byCat.map(c=>c.value));
+  const pct=(x,m)=>Math.min(100,Math.max(0,x/m*100)).toFixed(1);
+  const share=x=>A.total?Math.round(x/A.total*100):0;
+  const concl=[
+    A.top?`El valor del inventario es ${money(A.total)}; la categoría «${esc(A.top.nombre)}» concentra ${share(A.top.value)}% (${money(A.top.value)}).`:'',
+    A.lows.length?`${A.lows.length} producto(s) están por debajo del mínimo (${A.lows.map(p=>esc(p.nombre)).join(', ')}); faltan ${A.missing} unidad(es) para llegar al mínimo, por lo que conviene priorizar su reposición.`:'Ningún producto está por debajo de su stock mínimo; no hay reposiciones urgentes.',
+    `«${esc(A.maxPrice.nombre)}» es el producto de mayor valor unitario (${money(A.maxPrice.precio)}) y «${esc(A.minStock.nombre)}» el de menor stock (${A.minStock.stock} und.): conviene vigilar ambos.`
+  ];
+  v.innerHTML=`<div class="kpis"><div class="kpi"><span>Valor total del inventario</span><b>${money(A.total)}</b></div><div class="kpi"><span>Productos activos / unidades</span><b>${A.a.length} / ${units}</b></div><div class="kpi"><span>Mayor valor unitario</span><b>${esc(A.maxPrice.nombre)}</b><span>${money(A.maxPrice.precio)}</span></div><div class="kpi"><span>Menor stock</span><b>${esc(A.minStock.nombre)}</b><span>${A.minStock.stock} unidades</span></div><div class="kpi"><span>Bajo el mínimo</span><b>${A.lows.length}</b></div></div>
+  <div class="two"><div class="card"><h3>Stock por producto</h3><p class="muted">La marca vertical indica el stock mínimo; en ámbar, los que están por debajo.</p>${A.a.map(p=>`<div class="bar" role="img" aria-label="${esc(p.nombre)}: stock ${p.stock}, mínimo ${p.stockMin}"><span class="bl" title="${esc(p.nombre)}">${esc(p.nombre)}</span><div class="track"><i class="fill ${p.stock<p.stockMin?'low':''}" style="width:${pct(p.stock,mx)}%"></i><b class="mk" style="left:${pct(p.stockMin,mx)}%"></b></div><span class="bv">${p.stock}/${p.stockMin}</span></div>`).join('')}</div>
+  <div class="card"><h3>Valor por categoría</h3><p class="muted">Distribución del valor (precio × stock).</p>${A.byCat.map(c=>`<div class="bar" role="img" aria-label="${esc(c.nombre)}: ${money(c.value)}"><span class="bl" title="${esc(c.nombre)}">${esc(c.nombre)}</span><div class="track"><i class="fill cat" style="width:${pct(c.value,mv)}%"></i></div><span class="bv">${share(c.value)}%</span></div>`).join('')}</div></div>
+  <div class="card"><h3>Distribución por categoría</h3><div class="tw" style="margin-top:8px"><table><thead><tr><th>Categoría</th><th class="num">Productos</th><th class="num">Unidades</th><th class="num">Valor</th></tr></thead><tbody>${A.byCat.map(c=>`<tr><td>${esc(c.nombre)}</td><td class="num">${c.n}</td><td class="num">${c.units}</td><td class="num">${money(c.value)}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="card"><h3>Conclusiones para la administración</h3><ul class="c">${concl.map(c=>`<li>${c}</li>`).join('')}</ul></div>`;
+}
+
+function vTest(v){
+  const R=runTests(),ok=R.filter(r=>r.ok).length;
+  v.innerHTML=`<div class="bar-tools"><div style="flex:1"><h2>Pruebas de aceptación</h2><p class="muted">Se ejecutan sobre una copia aislada: no modifican el inventario real.</p></div><button class="primary" data-act="run-tests">Ejecutar de nuevo</button></div>
+  <div class="card"><b>${ok} de ${R.length} pruebas aprobadas</b></div><div class="tw"><table><thead><tr><th>Prueba</th><th>Acción</th><th>Resultado esperado</th><th>Resultado</th><th>Observación</th></tr></thead><tbody>${R.map(r=>`<tr><td><b>${r.id}</b></td><td>${esc(r.accion)}</td><td>${esc(r.esperado)}</td><td><span class="badge ${r.ok?'b-ok':'b-er'}">${r.ok?'APROBADA':'FALLÓ'}</span></td><td class="muted">${esc(r.obs)}</td></tr>`).join('')}</tbody></table></div>
+  ${isAdmin()?'<div class="row"><button class="danger" data-act="reset">Restablecer datos de ejemplo</button></div>':''}`;
+}
+
+/* ---------- Formularios y diálogos ---------- */
+const dlg=()=>$('#dlg');
+function open(html){dlg().innerHTML=html;if(!dlg().open)dlg().showModal();const f=dlg().querySelector('input,select');if(f&&f.type!=='hidden')f.focus()}
+function closeDlg(){if(dlg().open)dlg().close();pending=null}
+function prodForm(id,v,er){
+  v=v||{};er=er||{};
+  const f=(k,l,type,x)=>`<label class="${x||''}">${l}<input name="${k}" type="${type}" ${type==='number'?'step="'+(k==='precio'?'any':'1')+'" inputmode="decimal"':''} value="${esc(v[k])}" aria-invalid="${er[k]?'true':'false'}"><small class="err">${esc(er[k])}</small></label>`;
+  open(`<form id="pf" data-id="${id||''}" novalidate><h2 style="margin-bottom:10px">${id?'Modificar producto':'Registrar producto'}</h2><div class="grid">
+  ${f('codigo','Código *','text')}${f('nombre','Nombre *','text')}
+  <label class="full">Descripción (opcional)<textarea name="descripcion" rows="2">${esc(v.descripcion)}</textarea><small class="err">${esc(er.descripcion)}</small></label>
+  <label class="full">Categoría *<select name="categoriaId" aria-invalid="${er.categoriaId?'true':'false'}"><option value="">Selecciona…</option>${sv.S.cats.map(c=>`<option value="${c.id}" ${String(c.id)===String(v.categoriaId)?'selected':''}>${esc(c.nombre)}</option>`).join('')}</select><small class="err">${esc(er.categoriaId)}</small></label>
+  ${f('precio','Precio (COP) *','number')}${f('stock','Stock *','number')}${f('stockMin','Stock mínimo *','number')}</div>
+  <div class="row end"><button type="button" data-act="close">Cancelar</button><button class="primary">Guardar</button></div></form>`);
+}
+function textForm(title,id,val,err){
+  open(`<form id="cf" data-id="${id||''}" novalidate><h2 style="margin-bottom:10px">${title}</h2><label>Nombre de la categoría *<input name="nombre" value="${esc(val)}" aria-invalid="${err?'true':'false'}"><small class="err">${esc(err)}</small></label><div class="row end"><button type="button" data-act="close">Cancelar</button><button class="primary">Guardar</button></div></form>`);
+}
+function ask(title,msg,label,fn){pending=fn;open(`<h2>${esc(title)}</h2><p>${esc(msg)}</p><div class="row end"><button data-act="close">Cancelar</button><button class="primary" data-act="yes">${esc(label)}</button></div>`)}
+
+/* ---------- Eventos ---------- */
+document.addEventListener('click',e=>{
+  const tb=e.target.closest('[data-tab]');if(tb){ui.tab=tb.dataset.tab;render();return}
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const act=b.dataset.act,id=Number(b.dataset.id);
+  if(act==='logout'){U=null;try{sessionStorage.removeItem('iu.user')}catch(x){}render()}
+  else if(act==='close')closeDlg();
+  else if(act==='yes'){const f=pending;closeDlg();if(f)f()}
+  else if(act==='new-prod'&&canEdit())prodForm(null,{},{});
+  else if(act==='edit-prod'&&canEdit()){const p=sv.S.prods.find(x=>x.id===id);if(p)prodForm(id,p,{})}
+  else if(act==='toggle'&&isAdmin()){const p=sv.S.prods.find(x=>x.id===id);if(!p)return;const on=!Domain.isActive(p);
+    ask(on?'Reactivar producto':'Desactivar producto',on?`«${p.nombre}» volverá a mostrarse como disponible si tiene stock.`:`«${p.nombre}» dejará de aparecer como disponible. No se elimina: podrás reactivarlo.`,on?'Reactivar':'Desactivar',()=>{sv.setActive(id,on);toast(on?'Producto reactivado':'Producto desactivado');render()})}
+  else if(act==='new-cat'&&isAdmin())textForm('Nueva categoría',null,'','');
+  else if(act==='edit-cat'&&isAdmin()){const c=sv.S.cats.find(x=>x.id===id);if(c)textForm('Renombrar categoría',id,c.nombre,'')}
+  else if(act==='del-cat'&&isAdmin()){const c=sv.S.cats.find(x=>x.id===id);if(!c)return;
+    ask('Eliminar categoría',`¿Eliminar «${c.nombre}»? Solo es posible si no tiene productos.`,'Eliminar',()=>{const r=sv.deleteCategory(id);toast(r.ok?'Categoría eliminada':r.error);render()})}
+  else if(act==='run-tests')view();
+  else if(act==='reset'&&isAdmin())ask('Restablecer datos','Se reemplazará todo el inventario por los datos de ejemplo.','Restablecer',()=>{const s=Repo.seed();sv.S.cats=s.cats;sv.S.prods=s.prods;sv.S.seq=s.seq;Repo.save(sv.S);toast('Datos de ejemplo restablecidos');render()});
+});
+document.addEventListener('input',e=>{if(e.target.id==='q'){ui.q=e.target.value;drawTable()}});
+document.addEventListener('change',e=>{if(e.target.id==='fcat'){ui.cat=e.target.value;drawTable()}if(e.target.id==='fest'){ui.est=e.target.value;drawTable()}});
+document.addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target,d=Object.fromEntries(new FormData(f));
+  if(f.id==='login'){
+    const u=USERS.find(x=>x.u===Domain.fold(d.u)&&x.p===d.p);
+    if(!u){$('#lerr').textContent='Usuario o contraseña incorrectos.';return}
+    U=u;try{sessionStorage.setItem('iu.user',u.u)}catch(x){}ui={tab:'inv',q:'',cat:'',est:''};render();
+  }else if(f.id==='pf'&&canEdit()){
+    const id=Number(f.dataset.id)||null,r=id?sv.updateProduct(id,d):sv.createProduct(d);
+    if(!r.ok){prodForm(id,d,r.errors);return}
+    closeDlg();toast(id?'Producto actualizado':'Producto registrado');render();
+  }else if(f.id==='cf'&&isAdmin()){
+    const id=Number(f.dataset.id)||null,r=id?sv.renameCategory(id,d.nombre):sv.createCategory(d.nombre);
+    if(!r.ok){textForm(id?'Renombrar categoría':'Nueva categoría',id,d.nombre,r.error);return}
+    closeDlg();toast(id?'Categoría actualizada':'Categoría registrada');render();
+  }
+});
+render();
+</script>
+</body>
+</html>

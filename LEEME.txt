@@ -1,0 +1,19 @@
+COMO OBTENER EL APK (sin instalar nada en tu computador)
+
+1. Crea una cuenta gratis en https://github.com (si no tienes).
+2. Crea un repositorio nuevo (boton "New"), por ejemplo: inventario-universitario.
+3. Sube TODO el contenido de esta carpeta (incluida la carpeta oculta .github).
+   Si usas la web: "Add file > Upload files" y arrastra los archivos.
+   IMPORTANTE: la carpeta .github/workflows/build-apk.yml debe quedar en el repositorio.
+   Si la web no te deja arrastrar la carpeta oculta, crea el archivo a mano:
+   "Add file > Create new file", nombre: .github/workflows/build-apk.yml, y pega su contenido.
+4. Ve a la pestaña "Actions". Si pide habilitar los workflows, aceptalo.
+5. Elige "Construir APK" > "Run workflow". Tarda unos 5 a 8 minutos.
+6. Cuando termine (check verde), entra a esa ejecucion y, al final, en "Artifacts",
+   descarga "inventario-universitario-apk" (es un .zip con app-debug.apk dentro).
+7. Pasa el app-debug.apk al celular Android, abrelo y permite "instalar apps desconocidas".
+
+NOTAS
+- Es un APK de depuracion: sirve para instalar y demostrar en clase, no para Google Play.
+- Los datos se guardan en el propio celular (no se comparten entre dispositivos).
+- Para cambiar la app, edita www/index.html y vuelve a ejecutar el workflow.
